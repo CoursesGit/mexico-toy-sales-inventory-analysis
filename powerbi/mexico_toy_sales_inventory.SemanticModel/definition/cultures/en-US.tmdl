@@ -1,0 +1,416 @@
+cultureInfo en-US
+
+	linguisticMetadata =
+			{
+			  "Version": "2.0.0",
+			  "Language": "en-US",
+			  "Entities": {
+			    "sales_fact.gross_profit_margin": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "sales_fact",
+			          "ConceptualProperty": "Gross Profit Margin"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "毛利率": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "sales_fact.gross_profit": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "sales_fact",
+			          "ConceptualProperty": "Gross Profit"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "毛利润": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "sales_fact.total_sales": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "sales_fact",
+			          "ConceptualProperty": "Total Sales"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "销售额": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "sales_fact.total_units": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "sales_fact",
+			          "ConceptualProperty": "Total Units"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "销售数量": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "products.product_category": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "products",
+			          "ConceptualProperty": "Product_Category"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "商品类别": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "products.product_name": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "products",
+			          "ConceptualProperty": "Product_Name"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "商品": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "datetable.year_month": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DateTable",
+			          "ConceptualProperty": "Year Month"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "年月": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "datetable.date": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "DateTable",
+			          "ConceptualProperty": "Date"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "日期": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "stores.store_location": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "stores",
+			          "ConceptualProperty": "Store_Location"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "门店区域": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "stores.store_name": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "stores",
+			          "ConceptualProperty": "Store_Name"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "门店": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "inventory_fact.inventory_cost_value": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "inventory_fact",
+			          "ConceptualProperty": "Inventory Cost Value"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "库存成本金额": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "inventory_fact.out_of_stock_records": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "inventory_fact",
+			          "ConceptualProperty": "Out of Stock Records"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "缺货门店商品组合数": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "inventory_fact.inventory_retail_value": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "inventory_fact",
+			          "ConceptualProperty": "Inventory Retail Value"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "库存零售金额": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "inventory_fact.total_stock_units": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "inventory_fact",
+			          "ConceptualProperty": "Total Stock Units"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "当前库存数量": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "inventory_fact.stock_on_hand": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "inventory_fact",
+			          "ConceptualProperty": "Stock_On_Hand"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "inventory_fact.recent_90d_units": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "inventory_fact",
+			          "ConceptualProperty": "Recent_90D_Units"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "近90天销量": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "inventory_fact.avg_daily_units": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "inventory_fact",
+			          "ConceptualProperty": "Avg_Daily_Units"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "日均销量": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "inventory_fact.days_of_inventory": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "inventory_fact",
+			          "ConceptualProperty": "Days_of_Inventory"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "inventory_fact.out_of_stock_flag": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "inventory_fact",
+			          "ConceptualProperty": "Out_of_Stock_Flag"
+			        }
+			      },
+			      "State": "Generated"
+			    },
+			    "sales_fact.sales_mom_": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "sales_fact",
+			          "ConceptualProperty": "Sales MoM %"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "最近完整月销售额环比": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    },
+			    "inventory_fact.stockout_rate": {
+			      "Definition": {
+			        "Binding": {
+			          "ConceptualEntity": "inventory_fact",
+			          "ConceptualProperty": "Stockout Rate"
+			        }
+			      },
+			      "State": "Generated",
+			      "Terms": [
+			        {
+			          "缺货率": {
+			            "State": "Suggested",
+			            "Source": {
+			              "Type": "External",
+			              "Agent": "PowerBI.VisualColumnRename"
+			            },
+			            "Weight": 0.9
+			          }
+			        }
+			      ]
+			    }
+			  }
+			}
+		contentType: json
+

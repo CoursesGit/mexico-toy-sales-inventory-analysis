@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "mexico_toy_sales_inventory"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "ed80836b-09a3-4f20-8d72-3178599533c6"
+  }
+}

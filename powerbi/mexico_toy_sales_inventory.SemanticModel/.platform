@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "mexico_toy_sales_inventory"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "2115c9fa-c09e-41f0-b3b0-39a1f0b3ce6a"
+  }
+}

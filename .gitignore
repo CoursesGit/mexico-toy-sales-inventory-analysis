@@ -1,0 +1,23 @@
+# Original source data
+data/
+
+# Duplicate and backup projects
+**/duplicate_project_bundle/
+**/*_backup*/
+**/backup/
+**/temp/
+
+# Power BI local cache and settings
+**/.pbi/
+**/cache.abf
+**/localSettings.json
+**/editorSettings.json
+
+# Jupyter temporary files
+**/.ipynb_checkpoints/
+
+# Temporary system files
+*.tmp
+~$*
+Thumbs.db
+.DS_Store

@@ -1,0 +1,20 @@
+relationship rel_sales_products
+	fromColumn: sales_fact.Product_ID
+	toColumn: products.Product_ID
+
+relationship rel_inventory_products
+	fromColumn: inventory_fact.Product_ID
+	toColumn: products.Product_ID
+
+relationship rel_sales_stores
+	fromColumn: sales_fact.Store_ID
+	toColumn: stores.Store_ID
+
+relationship rel_inventory_stores
+	fromColumn: inventory_fact.Store_ID
+	toColumn: stores.Store_ID
+
+relationship rel_sales_date
+	fromColumn: sales_fact.Date
+	toColumn: DateTable.Date
+

@@ -1,0 +1,42 @@
+table products
+	lineageTag: 6bc36152-a2aa-4fd8-9368-efa777116690
+
+	column Product_ID
+		dataType: int64
+		lineageTag: 769a79a8-110a-45f7-8669-fa6e542c1272
+		summarizeBy: none
+		sourceColumn: Product_ID
+
+	column Product_Name
+		dataType: string
+		lineageTag: 74cad0d8-f215-44c7-8f8c-f49a20ff1559
+		summarizeBy: none
+		sourceColumn: Product_Name
+
+	column Product_Category
+		dataType: string
+		lineageTag: b3a11129-ecb9-4a4d-9186-a65daf10dfd1
+		summarizeBy: none
+		sourceColumn: Product_Category
+
+	column Product_Cost
+		dataType: double
+		formatString: $#,0.00
+		lineageTag: 9c17457d-2bf0-4103-a4e6-a7e75223b50a
+		sourceColumn: Product_Cost
+
+	column Product_Price
+		dataType: double
+		formatString: $#,0.00
+		lineageTag: 0625e263-afa1-42fe-bdb2-2b4c1e1314a8
+		sourceColumn: Product_Price
+
+	partition products = m
+		mode: import
+		source =
+				let
+				 CsvSource = Csv.Document(File.Contents("C:\Users\Administrator\Desktop\数据分析项目\03_Mexico_Toy_Sales\output\products.csv"),[Delimiter=",",Columns=5,Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
+				 PromotedHeaders = Table.PromoteHeaders(CsvSource,[PromoteAllScalars=true]),
+				 TypedColumns = Table.TransformColumnTypes(PromotedHeaders,{{"Product_ID",Int64.Type},{"Product_Name",type text},{"Product_Category",type text},{"Product_Cost",type number},{"Product_Price",type number}})
+				in TypedColumns
+

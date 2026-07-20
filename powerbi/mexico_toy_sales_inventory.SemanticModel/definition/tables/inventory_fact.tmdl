@@ -1,0 +1,114 @@
+table inventory_fact
+	lineageTag: 12557454-9325-4325-8304-22ba9e490ed7
+
+	measure 'Total Stock Units' = SUM(inventory_fact[Stock_On_Hand])
+		formatString: #,##0
+		lineageTag: 377f85f1-1e54-4d73-8f08-1eb678b01a19
+
+	measure 'Inventory Cost Value' = SUM(inventory_fact[Inventory_Cost_Value])
+		formatString: MXN #,##0
+		lineageTag: 0742eb18-93a7-4c00-bb5f-82562ad5c028
+
+	measure 'Inventory Retail Value' = SUM(inventory_fact[Inventory_Retail_Value])
+		formatString: MXN #,##0
+		lineageTag: 35a74da0-a147-44ef-90be-51db6fd19845
+
+	measure 'Out of Stock Records' = SUM(inventory_fact[Out_of_Stock_Flag])
+		formatString: #,##0
+		lineageTag: 304f143e-e455-49b8-80f4-29dc68d71d1d
+
+	measure 'Stock Risk Rank' =
+			RANKX(
+			    FILTER(
+			        ALLSELECTED(inventory_fact),
+			        inventory_fact[Out_of_Stock_Flag] = 1
+			    ),
+			    CALCULATE(MAX(inventory_fact[Recent_90D_Units])),
+			    ,
+			    DESC,
+			    DENSE
+			)
+		formatString: 0
+		lineageTag: 93dfb510-e356-4d0f-aaef-c7fdd79eb778
+
+	measure 'Stockout Rate' =
+			DIVIDE(
+			    CALCULATE(
+			        COUNTROWS(inventory_fact),
+			        inventory_fact[Out_of_Stock_Flag] = 1
+			    ),
+			    COUNTROWS(inventory_fact)
+			)
+		formatString: 0.0%
+		lineageTag: 4fc33da7-df4f-47db-b81c-b487c1e1732f
+
+	column Store_ID
+		dataType: int64
+		lineageTag: f33d4136-9943-4f2c-9c0b-7c89d2f6334b
+		summarizeBy: none
+		sourceColumn: Store_ID
+
+	column Product_ID
+		dataType: int64
+		lineageTag: 91c26cc8-77d6-4b64-96ab-356c66b2dffb
+		summarizeBy: none
+		sourceColumn: Product_ID
+
+	column Stock_On_Hand
+		dataType: int64
+		formatString: #,0
+		lineageTag: 4103a4d2-3ed2-443b-89b3-0baa78376f13
+		summarizeBy: sum
+		sourceColumn: Stock_On_Hand
+
+	column Inventory_Cost_Value
+		dataType: double
+		formatString: $#,0.00
+		lineageTag: bfdf1a28-dcec-41bd-a075-a8acb44f1dfd
+		summarizeBy: sum
+		sourceColumn: Inventory_Cost_Value
+
+	column Inventory_Retail_Value
+		dataType: double
+		formatString: $#,0.00
+		lineageTag: 18795e06-b57d-4f42-946d-a8eb66c9d127
+		summarizeBy: sum
+		sourceColumn: Inventory_Retail_Value
+
+	column Out_of_Stock_Flag
+		dataType: int64
+		formatString: #,0
+		lineageTag: d01eca3d-4803-4cc0-b4a1-9e08bc40afed
+		summarizeBy: sum
+		sourceColumn: Out_of_Stock_Flag
+
+	column Recent_90D_Units
+		dataType: int64
+		formatString: #,0
+		lineageTag: 5361e254-88a3-43b5-9b05-ba1fc70aa8ed
+		summarizeBy: sum
+		sourceColumn: Recent_90D_Units
+
+	column Avg_Daily_Units
+		dataType: double
+		formatString: 0.00
+		lineageTag: dab00ed7-f7fe-457b-b997-88a7449919fc
+		summarizeBy: sum
+		sourceColumn: Avg_Daily_Units
+
+	column Days_of_Inventory
+		dataType: double
+		formatString: 0.0
+		lineageTag: 43e355f9-d9c3-4b98-a188-2e94cfc46332
+		summarizeBy: sum
+		sourceColumn: Days_of_Inventory
+
+	partition inventory_fact = m
+		mode: import
+		source =
+				let
+				 CsvSource = Csv.Document(File.Contents("C:\Users\Administrator\Desktop\数据分析项目\03_Mexico_Toy_Sales\output\inventory_fact.csv"),[Delimiter=",",Columns=9,Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
+				 PromotedHeaders = Table.PromoteHeaders(CsvSource,[PromoteAllScalars=true]),
+				 TypedColumns = Table.TransformColumnTypes(PromotedHeaders,{{"Store_ID",Int64.Type},{"Product_ID",Int64.Type},{"Stock_On_Hand",Int64.Type},{"Inventory_Cost_Value",type number},{"Inventory_Retail_Value",type number},{"Out_of_Stock_Flag",Int64.Type},{"Recent_90D_Units",Int64.Type},{"Avg_Daily_Units",type number},{"Days_of_Inventory",type number}})
+				in TypedColumns
+

@@ -1,0 +1,23 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/visualContainer/2.7.0/schema.json",
+  "name": "native_page_navigator",
+  "position": {
+    "x": 1092.0364741641338,
+    "y": 12.03647416413374,
+    "z": 9000,
+    "height": 88.6322188449848,
+    "width": 323.89057750759878,
+    "tabOrder": 3000
+  },
+  "visual": {
+    "visualType": "pageNavigator",
+    "drillFilterOtherVisuals": true
+  },
+  "annotations": [
+    {
+      "value": "native_page_navigator",
+      "name": "codexVisualId"
+    }
+  ],
+  "howCreated": "InsertVisualButton"
+}
