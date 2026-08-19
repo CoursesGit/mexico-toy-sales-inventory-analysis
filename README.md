@@ -557,6 +557,8 @@ Donor Reserve = 45D
 
 > **整体销售和盈利表现怎么样？**
 
+![经营表现](images/mexico_01_sales_performance.png)
+
 主要包括：
 
 - 销售额
@@ -578,6 +580,8 @@ Donor Reserve = 45D
 
 > **当前库存风险集中在哪里，哪些高价值商品需要优先处理？**
 
+![库存风险](images/mexico_02_inventory_health_risk.png)
+
 主要包括：
 
 - 库存成本
@@ -598,6 +602,8 @@ Donor Reserve = 45D
 回答：
 
 > **现有库存能够缓解多少短缺，哪些需求仍需要补货？**
+
+![配置决策](images/mexico_03_inventory_allocation_action.png)
 
 主要包括：
 
