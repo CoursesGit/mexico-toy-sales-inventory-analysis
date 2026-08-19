@@ -1,39 +1,53 @@
 table DateTable
-	lineageTag: 8b793b87-7c79-4548-919b-0436663f2136
+	lineageTag: a2a3cfb3-40b1-487d-9e36-c280f536efe2
 
 	column Date
 		dataType: dateTime
 		isKey
 		formatString: yyyy-MM-dd
-		lineageTag: 6546e73f-91fe-47d1-8c75-0defefce891d
+		lineageTag: 3d8a2d48-150e-406c-89e1-3b9dd3290b9a
 		summarizeBy: none
 		sourceColumn: [Date]
 
 	column Year = YEAR(DateTable[Date])
 		dataType: int64
 		formatString: 0
-		lineageTag: 588e7930-a671-4603-a37e-7a51f5031196
+		lineageTag: 0e2806fa-527b-47c9-95b1-de4b3fbfc220
 		summarizeBy: none
 
-	column 'Month Number' = MONTH(DateTable[Date])
+	column Month_Number = MONTH(DateTable[Date])
 		dataType: int64
 		isHidden
 		formatString: 0
-		lineageTag: ebca2a82-313b-49c1-8a14-452966bd7b2c
+		lineageTag: ce42d1e7-7c98-4d08-a06e-6d55cd653fda
 		summarizeBy: none
 
-	column Month = FORMAT(DateTable[Date], "MMM")
+	column Month_Name = FORMAT(DateTable[Date],"MMM")
 		dataType: string
-		lineageTag: f7476c93-e606-46a4-8453-1265b9796b2a
+		lineageTag: deedf9e2-bf62-4593-8e47-fec394d4bb7d
 		summarizeBy: none
-		sortByColumn: 'Month Number'
+		sortByColumn: Month_Number
 
-	column 'Year Month' = FORMAT(DateTable[Date], "YYYY-MM")
-		dataType: string
-		lineageTag: aa3721c4-d5cc-42bd-8ba0-e81b8351ad77
+	column Month_Start = DATE(YEAR(DateTable[Date]),MONTH(DateTable[Date]),1)
+		dataType: dateTime
+		formatString: yyyy-MM
+		lineageTag: 140ee5a7-24de-4cab-a8f8-2ba46f57e836
 		summarizeBy: none
+
+	column YearMonthSort = YEAR(DateTable[Date])*100+MONTH(DateTable[Date])
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 3ffec6d7-d8e3-4cab-b5d2-6476d855b959
+		summarizeBy: none
+
+	column Year_Month = FORMAT(DateTable[Date],"yyyy-MM")
+		dataType: string
+		lineageTag: c44cde7e-ad23-4c9d-af4e-fd6280367184
+		summarizeBy: none
+		sortByColumn: YearMonthSort
 
 	partition DateTable = calculated
 		mode: import
-		source = CALENDAR(DATE(2017, 1, 1), DATE(2018, 9, 30))
+		source = CALENDAR(MIN(sales_fact[Date]),MAX(sales_fact[Date]))
 

@@ -1,87 +1,49 @@
 table sales_fact
-	lineageTag: 0389bbd2-9a41-4391-af54-d416862af143
+	lineageTag: 7d56f1da-6840-4307-a199-595a01db1bca
 
 	measure 'Total Sales' = SUM(sales_fact[Sales])
-		formatString: MXN #,##0
-		lineageTag: 6900c6e0-cf1a-40a4-8fdc-d08f487290eb
+		formatString: #,##0.00
+		lineageTag: 88ad1540-4e10-42c1-912c-059114c99f71
 
-	measure 'Gross Profit' = SUM(sales_fact[Profit])
-		formatString: MXN #,##0
-		lineageTag: b36dd91c-737f-49be-9934-f8f3f00ade26
+	measure 'Gross Profit' = SUM(sales_fact[Gross_Profit])
+		formatString: #,##0.00
+		lineageTag: aa9ce8e5-b0a5-42ca-96e6-3399d7882bfe
 
 	measure 'Total Units' = SUM(sales_fact[Units])
+		formatString: #,##0.00
+		lineageTag: 825b3b95-3d3b-4f19-b50a-35fa44965223
+
+	measure 'Previous Month Sales' = VAR d=MAXX(ALLSELECTED(DateTable[Date]),DateTable[Date]) VAR s=EOMONTH(d,-2)+1 VAR e=EOMONTH(d,-1) RETURN CALCULATE([Total Sales],REMOVEFILTERS(DateTable),DATESBETWEEN(DateTable[Date],s,e))
 		formatString: #,##0
-		lineageTag: 95fc2835-0744-4ad5-8273-c9be1a18aaf8
+		lineageTag: 1a05e584-f8c1-4c27-a8fd-d46c3dfc341c
 
-	measure 'Gross Profit Margin' = DIVIDE([Gross Profit], [Total Sales])
-		formatString: 0.0%
-		lineageTag: 187a1fd7-9065-45cf-8ad5-4e9826c32fdd
-
-	measure 'Previous Month Sales' =
-			VAR LatestVisibleDate =
-			    MAXX(ALLSELECTED(DateTable[Date]), DateTable[Date])
-			VAR LatestCompleteMonthEnd =
-			    IF(
-			        LatestVisibleDate = EOMONTH(LatestVisibleDate, 0),
-			        LatestVisibleDate,
-			        EOMONTH(LatestVisibleDate, -1)
-			    )
-			VAR PreviousMonthStart =
-			    EOMONTH(LatestCompleteMonthEnd, -2) + 1
-			VAR PreviousMonthEnd =
-			    EOMONTH(LatestCompleteMonthEnd, -1)
-			RETURN
-			    CALCULATE(
-			        [Total Sales],
-			        REMOVEFILTERS(DateTable),
-			        DATESBETWEEN(DateTable[Date], PreviousMonthStart, PreviousMonthEnd)
-			    )
-		formatString: MXN #,##0
-		lineageTag: 59cf2aa2-60fd-4f82-9826-daafcb9ba26b
-
-	measure 'Sales MoM %' =
-			VAR PreviousSales = [Previous Month Sales]
-			RETURN
-			    IF(
-			        ISBLANK(PreviousSales) || PreviousSales = 0,
-			        BLANK(),
-			        DIVIDE([Latest Month Sales] - PreviousSales, PreviousSales)
-			    )
+	measure 'Sales MoM %' = DIVIDE([Latest Month Sales]-[Previous Month Sales],[Previous Month Sales])
 		formatString: 0.0%;-0.0%
-		lineageTag: 29cc8c1c-9adf-4bb4-80ed-a7d1ad7e062e
+		lineageTag: 9ed9496c-99ce-4674-8363-5db945053819
 
-	measure 'Latest Month Sales' =
-			VAR LatestVisibleDate =
-			    MAXX(ALLSELECTED(DateTable[Date]), DateTable[Date])
-			VAR LatestCompleteMonthEnd =
-			    IF(
-			        LatestVisibleDate = EOMONTH(LatestVisibleDate, 0),
-			        LatestVisibleDate,
-			        EOMONTH(LatestVisibleDate, -1)
-			    )
-			VAR LatestMonthStart =
-			    EOMONTH(LatestCompleteMonthEnd, -1) + 1
-			VAR LatestMonthEnd =
-			    LatestCompleteMonthEnd
-			RETURN
-			    CALCULATE(
-			        [Total Sales],
-			        REMOVEFILTERS(DateTable),
-			        DATESBETWEEN(DateTable[Date], LatestMonthStart, LatestMonthEnd)
-			    )
-		formatString: MXN #,##0
-		lineageTag: 3ac5ec46-f0cc-4009-b4f3-1a4ea934f827
+	measure 'Latest Month Sales' = VAR d=MAXX(ALLSELECTED(DateTable[Date]),DateTable[Date]) VAR s=DATE(YEAR(d),MONTH(d),1) VAR e=EOMONTH(d,0) RETURN CALCULATE([Total Sales],REMOVEFILTERS(DateTable),DATESBETWEEN(DateTable[Date],s,e))
+		formatString: #,##0
+		lineageTag: 4125386a-657d-4f71-9c95-8d344cf6f4fd
+
+	measure 'Total COGS' = SUM(sales_fact[COGS])
+		formatString: #,##0
+		lineageTag: 4a67525a-4850-46e0-8061-18d02080f5f8
+
+	measure 'Gross Margin' = DIVIDE([Gross Profit], [Total Sales])
+		formatString: 0.0%
+		lineageTag: f39bbe64-70c3-404a-9fb4-590d359d62cd
 
 	column Sale_ID
 		dataType: int64
-		lineageTag: d9741516-f60d-48a6-bc5f-0f91d658cd56
+		isHidden
+		lineageTag: 2cfa026c-2ebe-4523-9d92-4361839b4a7a
 		summarizeBy: none
 		sourceColumn: Sale_ID
 
 	column Date
 		dataType: dateTime
-		formatString: Short Date
-		lineageTag: 33886f0f-7456-4754-9ac9-0c233864c5f8
+		formatString: yyyy-MM-dd
+		lineageTag: 4c2cd64b-b381-416e-a914-c556b2723386
 		summarizeBy: none
 		sourceColumn: Date
 
@@ -89,50 +51,52 @@ table sales_fact
 
 	column Store_ID
 		dataType: int64
-		lineageTag: 4e84139c-2c66-4fe2-9ca7-6394521f69f1
+		isHidden
+		lineageTag: 9b38876f-40c3-4262-939a-4e16a89f17fb
 		summarizeBy: none
 		sourceColumn: Store_ID
 
 	column Product_ID
 		dataType: int64
-		lineageTag: 5c5a9dc8-f77c-403e-942e-d0d6f1eb9a6e
+		isHidden
+		lineageTag: 7499f8a4-b3e8-4f1a-b919-14aa76877047
 		summarizeBy: none
 		sourceColumn: Product_ID
 
 	column Units
 		dataType: int64
-		formatString: #,0
-		lineageTag: 774878f1-82ea-4603-a2a7-d02e2a071ae3
-		summarizeBy: sum
+		formatString: #,##0
+		lineageTag: ed714f94-c7f5-491c-8da5-4ce521fbcdf7
+		summarizeBy: none
 		sourceColumn: Units
 
 	column Sales
 		dataType: double
-		formatString: $#,0.00
-		lineageTag: 8c238559-4285-4985-a04a-ed9a84b58e36
-		summarizeBy: sum
+		formatString: #,##0.00
+		lineageTag: 8208eac5-e8a5-494e-9d02-86d34851c90d
+		summarizeBy: none
 		sourceColumn: Sales
 
-	column Cost
+	column COGS
 		dataType: double
-		formatString: $#,0.00
-		lineageTag: 18e4efe6-23ac-4690-9d96-96ab8cf86d27
-		summarizeBy: sum
-		sourceColumn: Cost
+		formatString: #,##0.00
+		lineageTag: 9cbd71b1-6e09-4736-8f01-6660e482567a
+		summarizeBy: none
+		sourceColumn: COGS
 
-	column Profit
+	column Gross_Profit
 		dataType: double
-		formatString: $#,0.00
-		lineageTag: d970be01-2fff-4c17-b3cc-f3d1feba6679
-		summarizeBy: sum
-		sourceColumn: Profit
+		formatString: #,##0.00
+		lineageTag: 619db33e-9936-4cca-befc-1db9a34141fb
+		summarizeBy: none
+		sourceColumn: Gross_Profit
 
 	partition sales_fact = m
 		mode: import
 		source =
 				let
-				    Source = Csv.Document(File.Contents("C:\Users\Administrator\Desktop\数据分析项目\03_Mexico_Toy_Sales\output\sales_fact.csv"),[Delimiter=",", Columns=8, Encoding=65001, QuoteStyle=QuoteStyle.Csv]),
-				    Headers = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
-				    Types = Table.TransformColumnTypes(Headers,{{"Sale_ID", Int64.Type},{"Date", type date},{"Store_ID", Int64.Type},{"Product_ID", Int64.Type},{"Units", Int64.Type},{"Sales", type number},{"Cost", type number},{"Profit", type number}})
+					Source = Csv.Document(File.Contents(DataRootPath & "sales_fact.csv"),[Delimiter=",",Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source,[PromoteAllScalars=true]),
+					Types = Table.TransformColumnTypes(Headers,{{"Sale_ID",Int64.Type},{"Date",type date},{"Store_ID",Int64.Type},{"Product_ID",Int64.Type},{"Units",Int64.Type},{"Sales",type number},{"COGS",type number},{"Gross_Profit",type number}})
 				in Types
 

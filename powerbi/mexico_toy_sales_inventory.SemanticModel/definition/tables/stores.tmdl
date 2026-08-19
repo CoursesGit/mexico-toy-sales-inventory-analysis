@@ -1,43 +1,56 @@
 table stores
-	lineageTag: 7ddb1514-a99c-45b9-80f7-17f874109475
+	lineageTag: 726333e5-ba6d-4360-8265-10a890111069
 
 	column Store_ID
 		dataType: int64
-		lineageTag: 09d1761e-1d96-4a88-83fb-5c6659e94588
+		isKey
+		lineageTag: 15b53ace-50e5-4021-bfd1-c70bb2872fdd
 		summarizeBy: none
 		sourceColumn: Store_ID
 
 	column Store_Name
 		dataType: string
-		lineageTag: e2937514-7926-4992-af7f-5ab201b764b8
+		lineageTag: efee69db-3fb0-4503-9751-ac2d7f43e78c
 		summarizeBy: none
 		sourceColumn: Store_Name
 
 	column Store_City
 		dataType: string
-		lineageTag: 9a80eeaa-eb76-40fe-934c-8ec8d258dc02
+		lineageTag: 4081fb04-31a9-4165-b0af-55f3e2544455
 		summarizeBy: none
 		sourceColumn: Store_City
 
 	column Store_Location
 		dataType: string
-		lineageTag: f72cfa35-4a9e-4c8b-abae-f5eb3e0ca324
+		lineageTag: d2350406-ff6d-4d02-bfeb-2a8b029bdc86
 		summarizeBy: none
 		sourceColumn: Store_Location
 
 	column Store_Open_Date
 		dataType: dateTime
-		formatString: Short Date
-		lineageTag: 0424a434-eeaa-4224-a8ed-e59e4b6064fb
+		formatString: yyyy-MM-dd
+		lineageTag: 3b9b7985-ca1e-4549-ba3f-cc6c92dfba1c
 		summarizeBy: none
 		sourceColumn: Store_Open_Date
 
 		annotation UnderlyingDateTimeDataType = Date
 
+	column 门店类型显示 = SWITCH(stores[Store_Location], "Airport","机场店", "Commercial","商业区店", "Downtown","市中心店", "Residential","社区店", stores[Store_Location])
+		dataType: string
+		lineageTag: a2622df6-d271-4c28-81ef-40bdaf91f273
+		summarizeBy: none
+
+	column 门店简称 = SUBSTITUTE(stores[Store_Name], "Maven Toys ", "")
+		dataType: string
+		lineageTag: 27632610-ef75-44c2-a405-153fb90b5d5d
+		summarizeBy: none
+
 	partition stores = m
 		mode: import
 		source =
 				let
-				 Source=Csv.Document(File.Contents("C:\Users\Administrator\Desktop\数据分析项目\03_Mexico_Toy_Sales\output\stores.csv"),[Delimiter=",",Columns=5,Encoding=65001,QuoteStyle=QuoteStyle.Csv]), Headers=Table.PromoteHeaders(Source,[PromoteAllScalars=true]), Types=Table.TransformColumnTypes(Headers,{{"Store_ID",Int64.Type},{"Store_Name",type text},{"Store_City",type text},{"Store_Location",type text},{"Store_Open_Date",type date}})
+					Source = Csv.Document(File.Contents(DataRootPath & "stores.csv"),[Delimiter=",",Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source,[PromoteAllScalars=true]),
+					Types = Table.TransformColumnTypes(Headers,{{"Store_ID",Int64.Type},{"Store_Name",type text},{"Store_City",type text},{"Store_Location",type text},{"Store_Open_Date",type date}})
 				in Types
 

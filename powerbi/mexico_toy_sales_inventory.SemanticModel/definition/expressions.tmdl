@@ -1,0 +1,4 @@
+expression DataRootPath = "C:\path\to\03_Mexico_Toy_Sales\output\" meta [IsParameterQuery=true, Type="Text", IsParameterQueryRequired=true]
+	lineageTag: a03cfe02-f3b6-4f6a-9355-e80f15a5a0c2
+
+	annotation PBI_ResultType = Text

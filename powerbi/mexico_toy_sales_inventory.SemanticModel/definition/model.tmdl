@@ -8,7 +8,7 @@ model Model
 
 annotation __PBI_TimeIntelligenceEnabled = 0
 
-annotation PBI_QueryOrder = ["sales_fact","products","stores","inventory_fact"]
+annotation PBI_QueryOrder = ["DataRootPath","sales_fact","products","stores","inventory_fact","inventory_actions","inventory_exceptions","scenario_summary"]
 
 annotation PBI_ProTooling = ["DevMode"]
 
@@ -17,6 +17,9 @@ ref table products
 ref table stores
 ref table inventory_fact
 ref table DateTable
+ref table inventory_actions
+ref table inventory_exceptions
+ref table scenario_summary
 
 ref cultureInfo en-US
 

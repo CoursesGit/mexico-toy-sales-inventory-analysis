@@ -1,0 +1,204 @@
+table scenario_summary
+	lineageTag: 5b33b47c-a78d-4a79-9136-bfd31c13ce86
+
+	measure 'Scenario Unit Coverage' = SUM(scenario_summary[Unit_Coverage])
+		formatString: 0.0%
+		lineageTag: a7479bdc-10e9-4fc5-8254-bcdd2cb19583
+
+	measure 'Scenario GP Coverage' = SUM(scenario_summary[GP_Coverage])
+		formatString: 0.0%
+		lineageTag: 2d328d12-f9b5-409c-9061-8e82a3f2c0e7
+
+	measure 'Scenario Matched Units' = SUM(scenario_summary[Max_Matched_Units])
+		formatString: #,##0
+		lineageTag: 24e82c9a-4957-4c3d-afb9-c901de773b35
+
+	measure 'Policy Unit Coverage' = CALCULATE([Scenario Unit Coverage], scenario_summary[Scenario_Group]="Policy Scenario")
+		formatString: 0.0%
+		lineageTag: ddcd0742-48de-40e5-bb06-4b5dbfb51d3e
+
+	measure 'Policy GP Coverage' = CALCULATE([Scenario GP Coverage], scenario_summary[Scenario_Group]="Policy Scenario")
+		formatString: 0.0%
+		lineageTag: da42dc1a-53f0-4810-ac7c-fa8f57646349
+
+	measure 'Sensitivity Matched Units' = CALCULATE([Scenario Matched Units], scenario_summary[Scenario_Group]="Demand Window Sensitivity")
+		formatString: #,##0
+		lineageTag: 2ea59269-bf2e-4d59-8918-261367eea512
+
+	measure 'Sensitivity Unit Coverage' = CALCULATE([Scenario Unit Coverage], scenario_summary[Scenario_Group]="Demand Window Sensitivity")
+		formatString: 0.0%
+		lineageTag: 0e325d22-9d50-49bd-bc97-202cb77a99ec
+
+	measure 'Sensitivity GP Coverage' = CALCULATE([Scenario GP Coverage], scenario_summary[Scenario_Group]="Demand Window Sensitivity")
+		formatString: 0.0%
+		lineageTag: 31ac69a1-91ec-4aff-a662-628a702396eb
+
+	measure 'Same-City Scenario Matched Units' = CALCULATE([Scenario Matched Units],scenario_summary[Scenario_Name]="Same-City Base")
+		formatString: #,##0
+		lineageTag: b61380f4-2dde-40e7-8be6-e21f2766a405
+
+	measure 'Same-City Scenario Unit Coverage' = CALCULATE([Scenario Unit Coverage],scenario_summary[Scenario_Name]="Same-City Base")
+		formatString: 0.0%
+		lineageTag: f2002eef-b7cb-4392-8a9d-e54d14c2ce7d
+
+	measure 'Same-City Scenario GP Coverage' = CALCULATE([Scenario GP Coverage],scenario_summary[Scenario_Name]="Same-City Base")
+		formatString: 0.0%
+		lineageTag: 8451bfac-770e-40b0-ace7-83b0095687d9
+
+	column Scenario_Group
+		dataType: string
+		lineageTag: cd03addf-f504-43f7-ab47-9448373ee6e9
+		summarizeBy: none
+		sourceColumn: Scenario_Group
+
+	column Scenario_Name
+		dataType: string
+		lineageTag: 6b65b209-4dde-4b21-91b6-fb7cb47c9537
+		summarizeBy: none
+		sourceColumn: Scenario_Name
+
+	column Demand_Window_Days
+		dataType: int64
+		formatString: 0
+		lineageTag: 75872f39-5a9d-445e-bf73-414c65409289
+		summarizeBy: none
+		sourceColumn: Demand_Window_Days
+
+	column Receiver_Target_Days
+		dataType: int64
+		formatString: 0
+		lineageTag: 2b48e106-fed0-4385-8f14-4d6fd87f4f8b
+		summarizeBy: none
+		sourceColumn: Receiver_Target_Days
+
+	column Donor_Reserve_Days
+		dataType: int64
+		formatString: 0
+		lineageTag: ce3f03b6-10a6-4803-aae0-cdeb6d64eb16
+		summarizeBy: none
+		sourceColumn: Donor_Reserve_Days
+
+	column Geographic_Constraint
+		dataType: string
+		lineageTag: 8ec74ee6-12c8-41a6-a708-f89b15e80f2f
+		summarizeBy: none
+		sourceColumn: Geographic_Constraint
+
+	column Active_Stockout
+		dataType: int64
+		formatString: #,##0
+		lineageTag: cb97017c-6df8-4c8b-b43d-705b613b0c97
+		summarizeBy: none
+		sourceColumn: Active_Stockout
+
+	column Critical
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 0af0f6f8-a20f-4ba6-8dff-aa720f39fadc
+		summarizeBy: none
+		sourceColumn: Critical
+
+	column Receiver_Count
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 771a9d34-d099-4f9c-b86d-07f9216a1ac1
+		summarizeBy: none
+		sourceColumn: Receiver_Count
+
+	column Receiver_Need
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 369859ec-e758-441d-b5c4-a873d2c652f9
+		summarizeBy: none
+		sourceColumn: Receiver_Need
+
+	column Effective_Donor_Count
+		dataType: int64
+		formatString: #,##0
+		lineageTag: cad364db-7fec-4b59-8484-0aaf342971ae
+		summarizeBy: none
+		sourceColumn: Effective_Donor_Count
+
+	column Donor_Excess
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 211fa8f7-1adb-424b-8bbe-002ae07385fa
+		summarizeBy: none
+		sourceColumn: Donor_Excess
+
+	column Max_Matched_Units
+		dataType: int64
+		formatString: #,##0
+		lineageTag: ed259bfd-9455-4837-9676-61c2fe205fbc
+		summarizeBy: none
+		sourceColumn: Max_Matched_Units
+
+	column Unit_Coverage
+		dataType: double
+		formatString: 0.0%
+		lineageTag: d3d079ed-19c7-4017-9198-c813bd431402
+		summarizeBy: none
+		sourceColumn: Unit_Coverage
+
+	column Total_GP_Opportunity
+		dataType: double
+		formatString: #,##0
+		lineageTag: 51daf053-578a-48a8-80e7-dc03f29759f8
+		summarizeBy: none
+		sourceColumn: Total_GP_Opportunity
+
+	column Covered_GP_Opportunity
+		dataType: double
+		formatString: #,##0
+		lineageTag: 0337b28e-7be6-4700-b2eb-5a3c57a3657d
+		summarizeBy: none
+		sourceColumn: Covered_GP_Opportunity
+
+	column GP_Coverage
+		dataType: double
+		formatString: 0.0%
+		lineageTag: b2310db5-a11d-4458-b364-444b742a8fee
+		summarizeBy: none
+		sourceColumn: GP_Coverage
+
+	column Receiver_Match_Rate
+		dataType: double
+		formatString: 0.0%
+		lineageTag: 2a76673a-46fe-478e-a716-4c50dc09f306
+		summarizeBy: none
+		sourceColumn: Receiver_Match_Rate
+
+	column 情景显示 = SWITCH(scenario_summary[Scenario_Name], "Conservative","保守", "Base","基准", "Aggressive","激进", scenario_summary[Scenario_Name])
+		dataType: string
+		lineageTag: 597a747f-37ab-4b9f-80be-7479506a0574
+		summarizeBy: none
+		sortByColumn: 情景顺序
+
+	column 情景顺序 = SWITCH(scenario_summary[Scenario_Name], "Conservative",1, "Base",2, "Aggressive",3, 99)
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 96c8e221-c82e-4afc-9d7e-3c555dc5be6d
+		summarizeBy: none
+
+	column 需求窗口显示 = SWITCH(scenario_summary[Scenario_Name], "30D","30天", "60D","60天", "90D","90天", scenario_summary[Scenario_Name])
+		dataType: string
+		lineageTag: 7af82a52-edd0-47d7-a726-1a818df658db
+		summarizeBy: none
+		sortByColumn: 需求窗口顺序
+
+	column 需求窗口顺序 = SWITCH(scenario_summary[Scenario_Name], "30D",1, "60D",2, "90D",3, 99)
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 60714ac6-66c8-42a4-afe3-a9b46c538954
+		summarizeBy: none
+
+	partition scenario_summary = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(DataRootPath & "scenario_summary.csv"),[Delimiter=",",Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source,[PromoteAllScalars=true]),
+					Types = Table.TransformColumnTypes(Headers,{{"Scenario_Group",type text},{"Scenario_Name",type text},{"Demand_Window_Days",Int64.Type},{"Receiver_Target_Days",Int64.Type},{"Donor_Reserve_Days",Int64.Type},{"Geographic_Constraint",type text},{"Active_Stockout",Int64.Type},{"Critical",Int64.Type},{"Receiver_Count",Int64.Type},{"Receiver_Need",Int64.Type},{"Effective_Donor_Count",Int64.Type},{"Donor_Excess",Int64.Type},{"Max_Matched_Units",Int64.Type},{"Unit_Coverage",type number},{"Total_GP_Opportunity",type number},{"Covered_GP_Opportunity",type number},{"GP_Coverage",type number},{"Receiver_Match_Rate",type number}})
+				in Types

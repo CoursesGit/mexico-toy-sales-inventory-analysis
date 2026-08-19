@@ -1,0 +1,203 @@
+table inventory_actions
+	lineageTag: 1eb32522-4de2-499d-88c4-dfa83580b069
+
+	measure 'Receiver Count' = COUNTROWS(inventory_actions)
+		formatString: #,##0
+		lineageTag: 52c41617-8551-4cf1-8198-d91ebd06ccdf
+
+	measure 'Receiver Need Units' = SUM(inventory_actions[Need_Qty])
+		formatString: #,##0
+		lineageTag: 79b78cba-aa07-4779-b175-3468bb5e9969
+
+	measure 'Matched Units' = SUM(inventory_actions[Total_Matched_Qty])
+		formatString: #,##0
+		lineageTag: 7d4028c0-eece-4027-9c9a-1fa24e4aa858
+
+	measure 'Same-City Matched Units' = SUM(inventory_actions[Same_City_Matched_Qty])
+		formatString: #,##0
+		lineageTag: fadce197-a479-4026-82dd-536124974e69
+
+	measure 'Cross-City Matched Units' = SUM(inventory_actions[Cross_City_Matched_Qty])
+		formatString: #,##0
+		lineageTag: 68b71c47-2f1b-401f-913f-2f06e3aa69de
+
+	measure 'Remaining Need Units' = SUM(inventory_actions[Remaining_Need_Qty])
+		formatString: #,##0
+		lineageTag: 15f50ac4-5224-48ba-acf8-f6168cfeb230
+
+	measure 'Unit Need Coverage' = DIVIDE([Matched Units],[Receiver Need Units])
+		formatString: 0.0%
+		lineageTag: 0a4ea642-6601-4d4e-b0bd-c471150ea7bc
+
+	measure 'Total GP Opportunity' = SUM(inventory_actions[GP_Opportunity_Exposure])
+		formatString: #,##0
+		lineageTag: 113a0fa7-a5e8-4313-9a33-b9e3796c396e
+
+	measure 'Covered GP Opportunity' = SUM(inventory_actions[Covered_GP_Opportunity])
+		formatString: #,##0
+		lineageTag: f04df0fb-d01d-410d-b03b-ba9e5a686aa5
+
+	measure 'GP Opportunity Coverage' = DIVIDE([Covered GP Opportunity],[Total GP Opportunity])
+		formatString: 0.0%
+		lineageTag: dab2392e-82c9-4a4c-821c-50d5140219df
+
+	measure 'Fully Covered Receiver Count' = CALCULATE(COUNTROWS(inventory_actions),inventory_actions[Remaining_Need_Qty]=0)
+		formatString: #,##0
+		lineageTag: bd86aa2b-5402-4639-a410-4bee62613a1d
+
+	measure 'Partially Matched Receiver Count' = CALCULATE(COUNTROWS(inventory_actions),inventory_actions[Total_Matched_Qty]>0,inventory_actions[Remaining_Need_Qty]>0)
+		formatString: #,##0
+		lineageTag: 7d2e45d7-1c37-4f93-8d84-5b14a2c0d181
+
+	measure 'Replenishment Priority Count' = CALCULATE(COUNTROWS(inventory_actions),inventory_actions[Recommended_Action]="Replenishment Priority")
+		formatString: #,##0
+		lineageTag: 9d55bd21-8aa8-4c6f-b5d1-bd0c522b4644
+
+	measure 'Reallocation Candidate Count' = CALCULATE(COUNTROWS(inventory_actions),inventory_actions[Recommended_Action]<>"Replenishment Priority")
+		formatString: #,##0
+		lineageTag: ca31783d-f041-47b5-a1c7-e5912e953082
+
+	measure 'Action Priority Rank' = VAR CurrentScore=IF(MAX(inventory_actions[Inventory_Status])="Active Stockout",1000000000,0)+MAX(inventory_actions[GP_Opportunity_Exposure]) RETURN RANKX(ALLSELECTED(inventory_actions[Store_ID],inventory_actions[Product_ID]),CALCULATE(IF(MAX(inventory_actions[Inventory_Status])="Active Stockout",1000000000,0)+MAX(inventory_actions[GP_Opportunity_Exposure])),CurrentScore,DESC,DENSE)
+		formatString: 0
+		lineageTag: d1e8d29c-1b92-4e1e-82b3-6ac84d5013f6
+
+	column Store_ID
+		dataType: int64
+		isHidden
+		lineageTag: 67be90ab-32f5-4eb3-bc8c-4529ca7e81a5
+		summarizeBy: none
+		sourceColumn: Store_ID
+
+	column Product_ID
+		dataType: int64
+		isHidden
+		lineageTag: cbce9fa5-b436-4218-a043-1b9e2eec95e4
+		summarizeBy: none
+		sourceColumn: Product_ID
+
+	column Inventory_Status
+		dataType: string
+		lineageTag: 4a642768-be75-432d-9e5c-e47b4ce7381b
+		summarizeBy: none
+		sourceColumn: Inventory_Status
+
+	column Analytical_Priority
+		dataType: string
+		lineageTag: d382c064-6c70-48c8-a117-fb208b20fcbf
+		summarizeBy: none
+		sourceColumn: Analytical_Priority
+
+	column Stock_On_Hand
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 1d0ed60b-2653-4f3d-ad0f-816d6b13de5c
+		summarizeBy: none
+		sourceColumn: Stock_On_Hand
+
+	column Avg_Daily_Demand_90D
+		dataType: double
+		formatString: 0.00
+		lineageTag: 5eba6217-ab41-4931-a6ff-25aef46c4ade
+		summarizeBy: none
+		sourceColumn: Avg_Daily_Demand_90D
+
+	column Days_Cover_90D
+		dataType: double
+		formatString: 0.0
+		lineageTag: a60a69e2-a9cc-4697-9a66-b6399d821612
+		summarizeBy: none
+		sourceColumn: Days_Cover_90D
+
+	column Need_Qty
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 5f1c551e-e9f4-4d89-9069-5670dcc20d03
+		summarizeBy: none
+		sourceColumn: Need_Qty
+
+	column Same_City_Matched_Qty
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 4c9ac40d-a85a-4424-970c-27b4b52f5dfe
+		summarizeBy: none
+		sourceColumn: Same_City_Matched_Qty
+
+	column Cross_City_Matched_Qty
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 29db7154-d028-4f97-a8ac-cb2d8aec305b
+		summarizeBy: none
+		sourceColumn: Cross_City_Matched_Qty
+
+	column Total_Matched_Qty
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 6a66f227-b680-4495-ac2b-ba849da4c874
+		summarizeBy: none
+		sourceColumn: Total_Matched_Qty
+
+	column Remaining_Need_Qty
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 5c8bebc2-c963-4ea9-b5fe-213104115c0a
+		summarizeBy: none
+		sourceColumn: Remaining_Need_Qty
+
+	column Sales_Opportunity_Exposure
+		dataType: double
+		formatString: #,##0
+		lineageTag: 92fc0d31-0f08-4bb0-8f4c-cec4064a5675
+		summarizeBy: none
+		sourceColumn: Sales_Opportunity_Exposure
+
+	column GP_Opportunity_Exposure
+		dataType: double
+		formatString: #,##0
+		lineageTag: 3dbb87b2-d177-4b75-9da9-ab66b87b7ddd
+		summarizeBy: none
+		sourceColumn: GP_Opportunity_Exposure
+
+	column Recommended_Action
+		dataType: string
+		lineageTag: 1260df13-9785-44c4-8329-9dc39614fede
+		summarizeBy: none
+		sourceColumn: Recommended_Action
+
+	column Covered_GP_Opportunity
+		dataType: double
+		formatString: #,##0
+		lineageTag: 2239091c-3fcc-4369-b448-7ba0dd8c2395
+		summarizeBy: none
+		sourceColumn: Covered_GP_Opportunity
+
+	column 库存状态显示 = SWITCH(inventory_actions[Inventory_Status], "Active Stockout","缺货", "Critical","高风险", inventory_actions[Inventory_Status])
+		dataType: string
+		lineageTag: 1d511f72-9d5b-4f93-a399-c73ad05c813d
+		summarizeBy: none
+
+	column 建议动作显示 = SWITCH(inventory_actions[Recommended_Action], "Replenishment Priority","补货", "Cross-City Reallocation Candidate","跨城市调拨", "Same-City Reallocation Candidate","同城市调拨", inventory_actions[Recommended_Action])
+		dataType: string
+		lineageTag: 49a53c14-9b41-4785-b550-d913e7f35d42
+		summarizeBy: none
+		sortByColumn: 建议动作顺序
+
+	column 建议动作顺序 = SWITCH(inventory_actions[Recommended_Action], "Replenishment Priority",1, "Cross-City Reallocation Candidate",2, "Same-City Reallocation Candidate",3, 99)
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 57207bd9-2273-4d6d-befd-559814be5f3d
+		summarizeBy: none
+
+	column 行动优先级排名 = RANKX(ALL(inventory_actions), IF(inventory_actions[Inventory_Status] = "Active Stockout", 1000000000000, 0) + inventory_actions[GP_Opportunity_Exposure] * 1000000 - inventory_actions[Store_ID] * 1000 - inventory_actions[Product_ID],, DESC, SKIP)
+		isHidden
+		formatString: 0
+		lineageTag: a6ae90e4-e699-48fa-97c1-4305b1830481
+
+	partition inventory_actions = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(DataRootPath & "inventory_actions.csv"),[Delimiter=",",Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source,[PromoteAllScalars=true]),
+					Types = Table.TransformColumnTypes(Headers,{{"Store_ID",Int64.Type},{"Product_ID",Int64.Type},{"Inventory_Status",type text},{"Analytical_Priority",type text},{"Stock_On_Hand",Int64.Type},{"Avg_Daily_Demand_90D",type number},{"Days_Cover_90D",type number},{"Need_Qty",Int64.Type},{"Same_City_Matched_Qty",Int64.Type},{"Cross_City_Matched_Qty",Int64.Type},{"Total_Matched_Qty",Int64.Type},{"Remaining_Need_Qty",Int64.Type},{"Sales_Opportunity_Exposure",type number},{"GP_Opportunity_Exposure",type number},{"Recommended_Action",type text},{"Covered_GP_Opportunity",type number}})
+				in Types

@@ -1,42 +1,86 @@
 table products
-	lineageTag: 6bc36152-a2aa-4fd8-9368-efa777116690
+	lineageTag: ec59c454-862e-4e93-b5ca-6d4266e089f5
 
 	column Product_ID
 		dataType: int64
-		lineageTag: 769a79a8-110a-45f7-8669-fa6e542c1272
+		isKey
+		lineageTag: d0aee934-ed0d-4ce4-9d14-5e288b311866
 		summarizeBy: none
 		sourceColumn: Product_ID
 
 	column Product_Name
 		dataType: string
-		lineageTag: 74cad0d8-f215-44c7-8f8c-f49a20ff1559
+		lineageTag: f9ae7254-7268-43c6-8352-9f88313378a2
 		summarizeBy: none
 		sourceColumn: Product_Name
 
 	column Product_Category
 		dataType: string
-		lineageTag: b3a11129-ecb9-4a4d-9186-a65daf10dfd1
+		lineageTag: 5b332530-747e-43b8-8adc-dd8d5d94f9e0
 		summarizeBy: none
 		sourceColumn: Product_Category
 
 	column Product_Cost
 		dataType: double
-		formatString: $#,0.00
-		lineageTag: 9c17457d-2bf0-4103-a4e6-a7e75223b50a
+		formatString: #,##0.00
+		lineageTag: 23b60234-e4fd-4d93-b6ac-2e076ba8f2c0
+		summarizeBy: none
 		sourceColumn: Product_Cost
 
 	column Product_Price
 		dataType: double
-		formatString: $#,0.00
-		lineageTag: 0625e263-afa1-42fe-bdb2-2b4c1e1314a8
+		formatString: #,##0.00
+		lineageTag: 73dc1583-c02f-409d-934f-a7ed8bd316b3
+		summarizeBy: none
 		sourceColumn: Product_Price
+
+	column Historical_Sales
+		dataType: double
+		formatString: #,##0.00
+		lineageTag: 79991095-fc14-49d5-9b48-bbd020313ccd
+		summarizeBy: none
+		sourceColumn: Historical_Sales
+
+	column Historical_Gross_Profit
+		dataType: double
+		formatString: #,##0.00
+		lineageTag: 89ac9853-c3a7-46ac-ab1d-4fd4da9a3c92
+		summarizeBy: none
+		sourceColumn: Historical_Gross_Profit
+
+	column GP_Share
+		dataType: double
+		isHidden
+		formatString: 0.00%
+		lineageTag: f9e8edcf-ddf2-4ec3-800f-548f3b42fc13
+		summarizeBy: none
+		sourceColumn: GP_Share
+
+	column Cumulative_GP_Share
+		dataType: double
+		isHidden
+		formatString: 0.00%
+		lineageTag: 6626d903-8fa5-445b-8cf8-74287e372695
+		summarizeBy: none
+		sourceColumn: Cumulative_GP_Share
+
+	column ABC_Class
+		dataType: string
+		lineageTag: b49427f2-3787-4ae3-acc0-4984b9e22508
+		summarizeBy: none
+		sourceColumn: ABC_Class
+
+	column 商品类别显示 = SWITCH(products[Product_Category], "Art & Crafts","艺术与手工", "Electronics","电子玩具", "Games","游戏", "Sports & Outdoors","运动与户外", "Toys","玩具", products[Product_Category])
+		dataType: string
+		lineageTag: 67ac9644-e004-478c-99a2-007bb665fa94
+		summarizeBy: none
 
 	partition products = m
 		mode: import
 		source =
 				let
-				 CsvSource = Csv.Document(File.Contents("C:\Users\Administrator\Desktop\数据分析项目\03_Mexico_Toy_Sales\output\products.csv"),[Delimiter=",",Columns=5,Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
-				 PromotedHeaders = Table.PromoteHeaders(CsvSource,[PromoteAllScalars=true]),
-				 TypedColumns = Table.TransformColumnTypes(PromotedHeaders,{{"Product_ID",Int64.Type},{"Product_Name",type text},{"Product_Category",type text},{"Product_Cost",type number},{"Product_Price",type number}})
-				in TypedColumns
+					Source = Csv.Document(File.Contents(DataRootPath & "products.csv"),[Delimiter=",",Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source,[PromoteAllScalars=true]),
+					Types = Table.TransformColumnTypes(Headers,{{"Product_ID",Int64.Type},{"Product_Name",type text},{"Product_Category",type text},{"Product_Cost",type number},{"Product_Price",type number},{"Historical_Sales",type number},{"Historical_Gross_Profit",type number},{"GP_Share",type number},{"Cumulative_GP_Share",type number},{"ABC_Class",type text}})
+				in Types
 

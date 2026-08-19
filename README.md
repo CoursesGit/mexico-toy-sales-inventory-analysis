@@ -1,108 +1,156 @@
-# Mexico 玩具销售与库存分析
+# 墨西哥玩具零售经营与库存配置分析
 
-## 1. 项目简介
+Mexico Toy Retail Sales & Inventory Allocation Analysis
 
-本项目以 Python Notebook 和 Power BI 为主，整理销售、商品、门店和库存四类数据，分析销售规模、利润表现及单时点库存风险。项目没有使用 SQL。
+## 项目概览
 
-## 2. 分析目标
+本项目使用 Python、Pandas、Jupyter Notebook 和 Power BI/PBIP，将 Mexico Toy Sales 公开练习数据组织为一套从经营诊断到库存配置决策支持的可复现分析流程。项目不使用 SQL，也不将情景模拟包装为实际执行成果。
 
-- 汇总销售额、销售数量、毛利润和毛利率。
-- 比较商品类别、商品和门店的销售与利润表现。
-- 观察月度趋势及最近完整月销售额环比。
-- 描述当前库存、库存价值、缺货组合和门店区域缺货率。
+完整业务流程分为六个阶段：
 
-## 3. 数据来源与数据范围
+1. 业务目标与数据基础
+2. 销售与盈利表现诊断
+3. 商品优先级
+4. 库存健康与风险评估
+5. 库存配置决策支持
+6. 情景验证与业务建议
 
-项目使用 Mexico Toy Sales 公开练习数据：
+## 业务框架与分析方法
 
-| 数据 | 粒度 | 内容 |
-|---|---|---|
-| sales | 一条销售记录 | 日期、门店、商品和销售件数 |
-| products | 一个商品 | 商品名称、类别、成本和售价 |
-| stores | 一家门店 | 门店名称、城市、区域和开业日期 |
-| inventory | 一个门店—商品组合 | 当前库存件数 |
+- KPI / OSM framework
+- Monthly trend 与 MoM
+- Contribution analysis
+- ABC / Pareto 商品分级
+- Inventory health classification
+- Days of Cover
+- Opportunity Exposure
+- Same-SKU cross-store imbalance
+- Reallocation scenario analysis
+- Sensitivity analysis
 
-销售数据范围为 **2017-01-01 至 2018-09-30**，共 829,262 条记录；商品 35 个、门店 50 家，库存表包含 1,593 个实际门店—商品组合。`data_sample/` 是少量样例，不等同于 `data/` 中用于完整处理的数据。
+## 已验证结果
 
-所有金额均以 **MXN（墨西哥比索）** 表示。
+### 经营表现
 
-## 4. 使用工具
+| 指标 | 结果 |
+|---|---:|
+| Total Sales | 14,444,572.35 |
+| Total Units | 1,090,565 |
+| Gross Profit | 4,014,029.00 |
+| Gross Margin | 27.79% |
+| 最大观察期月度销售下降 | 2018-08 vs 2018-07：-20.22% |
 
-- Python / Pandas / Jupyter Notebook：清洗、多表关联、指标计算和 CSV 输出。
-- Power BI：读取 `output/` 中处理后的 CSV，建立销售与库存模型并制作两页 Dashboard。
-- 本项目没有 SQL 脚本或数据库依赖。
+金额均按源数据提供的金额单位呈现；源文件没有可信的 currency 字段，因此本项目不作 MXN 或 USD 的确定性声明。
 
-## 5. 数据处理过程
+### ABC 商品优先级
 
-1. 转换销售日期和门店开业日期，清洗商品成本与价格字段。
-2. 检查缺失值、重复行、商品和门店主键。
-3. 将销售表与商品、门店维度表关联，并校验 `many_to_one` 粒度。
-4. 计算销售额、销售成本、毛利润、库存成本和库存零售价值。
-5. 以最大销售日期为终点汇总最近 90 天销量，估算日均销量和库存覆盖天数。
-6. 将 `sales_fact.csv`、`products.csv`、`stores.csv` 和 `inventory_fact.csv` 输出到 `output/`，作为 Power BI 的实际数据源。
+| ABC | 商品数 | 历史毛利占比 |
+|---|---:|---:|
+| A | 15 | 79.65% |
+| B | 9 | — |
+| C | 11 | — |
 
-Notebook 使用相对路径：从 `data/` 读取原始 CSV，向 `output/` 写入处理结果。分析文件见 [mexico_toy_sales_analysis.ipynb](mexico_toy_sales_analysis.ipynb)。
+### 库存健康
 
-## 6. 主要指标口径
+| 状态 | Store-SKU 数量 |
+|---|---:|
+| Active Stockout | 77 |
+| Critical | 289 |
+| Low Stock | 267 |
+| Healthy | 661 |
+| Overstock | 206 |
+| Dormant | 93 |
 
-| 指标 | 定义 |
-|---|---|
-| 销售额 | `Units × Product_Price` 的合计，币种 MXN |
-| 毛利润 | 销售额 − `Units × Product_Cost`，未扣除其他运营费用 |
-| 毛利率 | 毛利润 / 销售额，为加权整体毛利率 |
-| 销售数量 | `Units` 合计 |
-| 当前库存 | 库存快照中 `Stock_On_Hand` 合计 |
-| 库存成本 | `Stock_On_Hand × Product_Cost` 的合计 |
-| 库存零售价值 | `Stock_On_Hand × Product_Price` 的合计 |
-| 缺货组合 | `Stock_On_Hand = 0` 的门店—商品组合数 |
-| 缺货率 | 缺货组合 / 库存表实际存在的 1,593 个组合 |
+Dormant inventory 包含 1,349 units，对应库存成本 16,656.51（源数据金额单位）。
 
-最大销售日期为 2018-09-30，9 月是完整月份，因此最近完整月为 **2018-09**，与 **2018-08** 比较。9 月销售额为 MXN 658,194.48，8 月为 MXN 660,877.07，环比约 **-0.4%**；前月为空或为 0 时指标返回空值。
+### Base Scenario：配置决策支持
 
-## 7. 分析内容
+| 指标 | 结果 |
+|---|---:|
+| Receiver Store-SKU | 366 |
+| Need | 7,622 |
+| Matched Units | 1,426 |
+| Unit Coverage | 18.71% |
+| GP Opportunity Coverage | 23.21% |
+| Remaining Need | 6,196 |
 
-- 销售额、销售数量、毛利润、毛利率和最近完整月环比。
-- 月度销售额与毛利率趋势、类别销售与利润表现。
-- 毛利润最高的商品和销售额最高的门店。
-- 当前库存、库存成本、库存零售价值及缺货组合。
-- 商品类别、门店区域的缺货分布和高需求缺货明细。
+Same-City 情景匹配 342 units，Unit Coverage 为 4.49%，GP Opportunity Coverage 为 5.97%。动作分层包含 40 个 Same-City Candidate、74 个 Cross-City-only Candidate 和 252 个 Replenishment Priority。
 
-## 8. 主要发现
+### 数据完整性例外
 
-- 总销售额约 MXN 14.4M，毛利润约 MXN 4.0M，整体毛利率为 27.8%，销售数量约 1.1M 件。
-- Toys 的销售规模最高；Electronics 的毛利率较高，销售规模与利润率需要分开观察。
-- Colorbuds 的累计毛利润最高。
-- 当前库存约 30K 件，库存成本约 MXN 300K，库存零售价值约 MXN 410K。
-- 1,593 个实际库存组合中有 77 个缺货，整体缺货率约 4.8%；Residential 区域缺货率较高。
+- 157 个缺失 inventory records
+- 其中 41 个组合存在历史销售
+- 其中 23 个组合存在近期需求
+- Inventory Unknown 不等于零库存，不参与零库存断言
 
-## 9. Dashboard 展示
+## 最终分析输出
 
-![Mexico 玩具销售概览](images/mexico_01_sales_overview.png)
+Notebook 运行后在 `output/` 生成七张 Power BI 输入表：
 
-![Mexico 玩具库存与缺货风险](images/mexico_02_inventory_risk.png)
+1. `sales_fact.csv`
+2. `products.csv`
+3. `stores.csv`
+4. `inventory_fact.csv`
+5. `inventory_actions.csv`
+6. `inventory_exceptions.csv`
+7. `scenario_summary.csv`
 
-## 10. 项目文件结构
+Power BI 项目包含三页 Dashboard：
+
+1. `01 经营表现`
+2. `02 库存风险`
+3. `03 配置决策`
+
+仓库暂不展示 Dashboard 截图：原有两张图片属于旧版两页结构，已从发布版本移除。三页正式截图可在后续从最终 PBIP 人工导出补充；当前 Power BI 源码完整保留。
+
+## 项目结构
 
 ```text
-03_Mexico_Toy_Sales/
-├─ README.md
-├─ mexico_toy_sales_analysis.ipynb
-├─ data/          # Notebook 读取的原始数据
-├─ data_sample/   # 少量展示样例
-├─ docs/          # 数据字典等说明
-├─ images/        # 两张最终 Dashboard 截图
-├─ output/        # Notebook 输出及 Power BI 实际数据源
-└─ powerbi/       # PBIP 项目文件
+mexico-toy-sales-inventory-analysis/
+├── README.md
+├── .gitignore
+├── mexico_toy_sales_analysis.ipynb
+├── data_sample/                 # 字段结构展示样例，不是完整分析数据
+├── docs/
+│   └── data_dictionary/         # 正式数据字典
+└── powerbi/                     # 三页 PBIP 报表与语义模型源码
 ```
 
-## 11. 如何查看或复现
+完整原始数据和生成结果不纳入 Git：
 
-直接查看上方截图即可浏览最终结果。完整复现时，将四张原始 CSV 放入 `data/`，在项目根目录打开并运行 [Notebook](mexico_toy_sales_analysis.ipynb)，确认结果写入 `output/`，再打开 [Power BI 项目](powerbi/mexico_toy_sales_inventory.pbip)。其他设备需要将 Power BI 的 CSV 数据源重新指向本机 `output/`。
+- `data/`：放置完整原始 CSV；Notebook 保持从该目录读取
+- `output/`：由 Notebook 生成七张 CSV；其中 `sales_fact.csv` 含 829,262 行
 
-## 12. 数据限制
+## 复现步骤
 
-- 库存数据是没有快照日期的单时点状态，不能分析补货历史或库存趋势。
-- 缺货率分母是实际记录的 1,593 个组合；缺少的 157 个理论组合无法判断是未经营还是未记录。
-- 最近 90 天日均销量和库存覆盖天数是静态估算，不是预测模型。
-- 数据没有采购、交货周期、安全库存和运营费用，不能直接形成完整补货或净利润结论。
-- 商品、门店和类别差异均为描述性结果，不能据此判断因果关系。
+1. Clone 本仓库。
+2. 将四张完整原始 CSV 放入项目根目录的 `data/`。
+3. 在项目根目录打开 `mexico_toy_sales_analysis.ipynb` 并执行 **Run All**。
+4. 确认 `output/` 已生成上述七张 CSV。
+5. 打开 `powerbi/mexico_toy_sales_inventory.pbip`。
+6. 在 Power BI 中将参数 `DataRootPath` 修改一次，使其指向本机项目的 `output/` 目录，并保留末尾路径分隔符。
+7. 刷新模型。
+
+公开 PBIP 将 `DataRootPath` 设为示例占位值 `C:\path\to\03_Mexico_Toy_Sales\output\`，不会包含项目作者的用户名或桌面路径。PBIP/PBIR 不在此处伪造不可靠的相对路径；使用者需按第 6 步设置自己的路径。
+
+`data_sample/` 仅展示字段结构，不能替代完整数据运行 Notebook 或刷新 Power BI。
+
+## 分析边界
+
+- Opportunity Exposure 是基于规则定义的机会暴露，不是实际销售损失。
+- Covered GP Opportunity 是情景覆盖指标，不是实际挽回利润。
+- Reallocation 结果是情景模拟，不是实际执行结果，也不是最优调拨算法。
+- 90D demand 表示近期历史销售速度，不是需求预测。
+- Days Cover 是分析指标，不是企业正式安全库存政策。
+- Same-City 仅是简单地理代理，不代表真实运输网络。
+- 数据不包含运输成本、距离、Lead Time、采购或补货记录。
+- 库存表是缺少明确快照日期的单时点状态，不能据此分析库存历史趋势。
+- 缺失 inventory record 的组合标记为 Inventory Unknown，不能视为零库存。
+- 所有结论均为描述性分析或规则情景结果，不应解释为因果效果。
+
+## 技术栈
+
+- Python
+- Pandas
+- Jupyter Notebook
+- Power BI / PBIP

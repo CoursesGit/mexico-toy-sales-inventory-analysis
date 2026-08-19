@@ -1,0 +1,66 @@
+table inventory_exceptions
+	lineageTag: 6668f35e-92b2-4fe0-89ab-5766f1d5a69c
+
+	measure 'Inventory Exception Count' = COUNTROWS(inventory_exceptions)
+		formatString: #,##0
+		lineageTag: 9743c80b-87f6-4ab8-8032-26a64acb2715
+
+	measure 'Recent Demand Exception Count' = CALCULATE(COUNTROWS(inventory_exceptions),inventory_exceptions[Has_Recent_90D_Sales]=TRUE())
+		formatString: #,##0
+		lineageTag: 3adc0335-b9d9-4933-839d-b8e109e5361a
+
+	column Store_ID
+		dataType: int64
+		isHidden
+		lineageTag: ad9052b9-a8c1-4121-a17b-cdbea38fa796
+		summarizeBy: none
+		sourceColumn: Store_ID
+
+	column Product_ID
+		dataType: int64
+		isHidden
+		lineageTag: f56f006a-657f-44e8-ad66-030f3f590f1d
+		summarizeBy: none
+		sourceColumn: Product_ID
+
+	column Historical_Units
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 238d144d-c489-48c6-89bb-41d635406741
+		summarizeBy: none
+		sourceColumn: Historical_Units
+
+	column Recent_90D_Units
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 90cb1e78-fe5b-4040-8297-64130d17e95c
+		summarizeBy: none
+		sourceColumn: Recent_90D_Units
+
+	column Has_Historical_Sales
+		dataType: boolean
+		isHidden
+		lineageTag: 15bd93bb-c152-40f9-b4c3-ccab860b97b0
+		summarizeBy: none
+		sourceColumn: Has_Historical_Sales
+
+	column Has_Recent_90D_Sales
+		dataType: boolean
+		lineageTag: c05b76f0-f565-4818-965b-f273f05b2964
+		summarizeBy: none
+		sourceColumn: Has_Recent_90D_Sales
+
+	column Exception_Type
+		dataType: string
+		lineageTag: fb8daf1a-a1c4-4a63-bbdb-499848338924
+		summarizeBy: none
+		sourceColumn: Exception_Type
+
+	partition inventory_exceptions = m
+		mode: import
+		source =
+				let
+					Source = Csv.Document(File.Contents(DataRootPath & "inventory_exceptions.csv"),[Delimiter=",",Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source,[PromoteAllScalars=true]),
+					Types = Table.TransformColumnTypes(Headers,{{"Store_ID",Int64.Type},{"Product_ID",Int64.Type},{"Historical_Units",Int64.Type},{"Recent_90D_Units",Int64.Type},{"Has_Historical_Sales",type logical},{"Has_Recent_90D_Sales",type logical},{"Exception_Type",type text}})
+				in Types

@@ -1,114 +1,186 @@
 table inventory_fact
-	lineageTag: 12557454-9325-4325-8304-22ba9e490ed7
+	lineageTag: c6730f5b-9f67-429e-be9f-c456fd6fda42
 
 	measure 'Total Stock Units' = SUM(inventory_fact[Stock_On_Hand])
 		formatString: #,##0
-		lineageTag: 377f85f1-1e54-4d73-8f08-1eb678b01a19
-
-	measure 'Inventory Cost Value' = SUM(inventory_fact[Inventory_Cost_Value])
-		formatString: MXN #,##0
-		lineageTag: 0742eb18-93a7-4c00-bb5f-82562ad5c028
+		lineageTag: 61166ac0-b686-41f1-bcdd-ceac2dced5f4
 
 	measure 'Inventory Retail Value' = SUM(inventory_fact[Inventory_Retail_Value])
-		formatString: MXN #,##0
-		lineageTag: 35a74da0-a147-44ef-90be-51db6fd19845
-
-	measure 'Out of Stock Records' = SUM(inventory_fact[Out_of_Stock_Flag])
 		formatString: #,##0
-		lineageTag: 304f143e-e455-49b8-80f4-29dc68d71d1d
+		lineageTag: a3312e91-5df4-42c0-a200-dcc4367a7da8
 
-	measure 'Stock Risk Rank' =
-			RANKX(
-			    FILTER(
-			        ALLSELECTED(inventory_fact),
-			        inventory_fact[Out_of_Stock_Flag] = 1
-			    ),
-			    CALCULATE(MAX(inventory_fact[Recent_90D_Units])),
-			    ,
-			    DESC,
-			    DENSE
-			)
+	measure 'Inventory Cost' = SUM(inventory_fact[Inventory_Cost])
+		formatString: #,##0.00
+		lineageTag: 92d31ef2-2f1d-4add-80c8-a46cda9002e4
+
+	measure 'Active Stockout Count' = CALCULATE(COUNTROWS(inventory_fact),inventory_fact[Inventory_Status]="Active Stockout")
+		formatString: #,##0
+		lineageTag: c8d26c32-76df-4209-b553-fab930d09c50
+
+	measure 'Critical Count' = CALCULATE(COUNTROWS(inventory_fact),inventory_fact[Inventory_Status]="Critical")
+		formatString: #,##0
+		lineageTag: 375b7718-2ea6-47c7-ab86-7bc2818b3645
+
+	measure 'Low Stock Count' = CALCULATE(COUNTROWS(inventory_fact),inventory_fact[Inventory_Status]="Low Stock")
+		formatString: #,##0
+		lineageTag: 96749c3b-e5d6-48f7-ad59-c9755e5523c5
+
+	measure 'Overstock Count' = CALCULATE(COUNTROWS(inventory_fact),inventory_fact[Inventory_Status]="Overstock")
+		formatString: #,##0
+		lineageTag: 0c54d0d5-fb79-4e7a-a358-c33ca2a307d0
+
+	measure 'Dormant Count' = CALCULATE(COUNTROWS(inventory_fact),inventory_fact[Inventory_Status]="Dormant / No Recent Sales")
+		formatString: #,##0
+		lineageTag: c2b6f855-82ef-4107-87f9-c0fbdc44058c
+
+	measure 'Dormant Inventory Cost' = CALCULATE([Inventory Cost],inventory_fact[Inventory_Status]="Dormant / No Recent Sales")
+		formatString: #,##0.00
+		lineageTag: a164afae-c3f2-4d40-afe7-31f961d64840
+
+	measure 'P1 Risk Count' = CALCULATE(COUNTROWS(inventory_fact),inventory_fact[Analytical_Priority]="P1")
+		formatString: #,##0
+		lineageTag: a0bdf436-7f79-4867-8e9c-ebb44b00585e
+
+	measure 'Base Sales Opportunity' = SUM(inventory_fact[Sales_Opportunity_Exposure_Base])
+		formatString: #,##0
+		lineageTag: 2f573a3d-e1b3-4f72-87bf-152bbfd73da1
+
+	measure 'Base GP Opportunity' = SUM(inventory_fact[GP_Opportunity_Exposure_Base])
+		formatString: #,##0.00
+		lineageTag: ff5c2a4a-3e57-42e1-b9f4-7dfec71d0348
+
+	measure 'Store-SKU Count' = COUNTROWS(inventory_fact)
+		formatString: #,##0
+		lineageTag: d95f02d9-41c4-445d-910a-f9ff34826fbd
+
+	measure 'Risk Priority Rank' = VAR CurrentScore=IF(MAX(inventory_fact[Inventory_Status])="Active Stockout",1000000000,0)+MAX(inventory_fact[GP_Opportunity_Exposure_Base]) RETURN RANKX(ALLSELECTED(inventory_fact[Store_ID],inventory_fact[Product_ID]),CALCULATE(IF(MAX(inventory_fact[Inventory_Status])="Active Stockout",1000000000,0)+MAX(inventory_fact[GP_Opportunity_Exposure_Base])),CurrentScore,DESC,DENSE)
 		formatString: 0
-		lineageTag: 93dfb510-e356-4d0f-aaef-c7fdd79eb778
+		lineageTag: a5cc4789-226a-4f57-8d0a-b6228edefac6
 
-	measure 'Stockout Rate' =
-			DIVIDE(
-			    CALCULATE(
-			        COUNTROWS(inventory_fact),
-			        inventory_fact[Out_of_Stock_Flag] = 1
-			    ),
-			    COUNTROWS(inventory_fact)
-			)
-		formatString: 0.0%
-		lineageTag: 4fc33da7-df4f-47db-b81c-b487c1e1732f
+	measure 'P1 GP Opportunity' = CALCULATE([Base GP Opportunity], inventory_fact[Analytical_Priority]="P1")
+		formatString: #,##0.00
+		lineageTag: 39eb93ba-ce2e-4257-8254-bbd3ddf0a4c7
 
 	column Store_ID
 		dataType: int64
-		lineageTag: f33d4136-9943-4f2c-9c0b-7c89d2f6334b
+		isHidden
+		lineageTag: a70e70cd-f22f-4321-837e-ae8f6355f96f
 		summarizeBy: none
 		sourceColumn: Store_ID
 
 	column Product_ID
 		dataType: int64
-		lineageTag: 91c26cc8-77d6-4b64-96ab-356c66b2dffb
+		isHidden
+		lineageTag: 9da07b50-8bd4-4d60-94c8-e7403d69d896
 		summarizeBy: none
 		sourceColumn: Product_ID
 
 	column Stock_On_Hand
 		dataType: int64
-		formatString: #,0
-		lineageTag: 4103a4d2-3ed2-443b-89b3-0baa78376f13
-		summarizeBy: sum
+		formatString: #,##0
+		lineageTag: e26ba01e-52af-4bcd-971a-9a1da4f22554
+		summarizeBy: none
 		sourceColumn: Stock_On_Hand
-
-	column Inventory_Cost_Value
-		dataType: double
-		formatString: $#,0.00
-		lineageTag: bfdf1a28-dcec-41bd-a075-a8acb44f1dfd
-		summarizeBy: sum
-		sourceColumn: Inventory_Cost_Value
 
 	column Inventory_Retail_Value
 		dataType: double
-		formatString: $#,0.00
-		lineageTag: 18795e06-b57d-4f42-946d-a8eb66c9d127
-		summarizeBy: sum
+		formatString: #,##0.00
+		lineageTag: 257970a3-2bb1-44c2-a203-5475c8aa2e42
+		summarizeBy: none
 		sourceColumn: Inventory_Retail_Value
-
-	column Out_of_Stock_Flag
-		dataType: int64
-		formatString: #,0
-		lineageTag: d01eca3d-4803-4cc0-b4a1-9e08bc40afed
-		summarizeBy: sum
-		sourceColumn: Out_of_Stock_Flag
 
 	column Recent_90D_Units
 		dataType: int64
-		formatString: #,0
-		lineageTag: 5361e254-88a3-43b5-9b05-ba1fc70aa8ed
-		summarizeBy: sum
+		formatString: #,##0
+		lineageTag: 6c90232c-3a83-429e-843d-5580ffe5fd14
+		summarizeBy: none
 		sourceColumn: Recent_90D_Units
 
-	column Avg_Daily_Units
+	column Inventory_Cost
+		dataType: double
+		formatString: #,##0.00
+		lineageTag: 98db2121-de92-4cd9-8b21-09ae12ed7d3b
+		summarizeBy: none
+		sourceColumn: Inventory_Cost
+
+	column Avg_Daily_Demand_90D
 		dataType: double
 		formatString: 0.00
-		lineageTag: dab00ed7-f7fe-457b-b997-88a7449919fc
-		summarizeBy: sum
-		sourceColumn: Avg_Daily_Units
+		lineageTag: 108f3c8e-d387-4075-8e3c-301919c2351a
+		summarizeBy: none
+		sourceColumn: Avg_Daily_Demand_90D
 
-	column Days_of_Inventory
+	column Days_Cover_90D
 		dataType: double
 		formatString: 0.0
-		lineageTag: 43e355f9-d9c3-4b98-a188-2e94cfc46332
-		summarizeBy: sum
-		sourceColumn: Days_of_Inventory
+		lineageTag: f87e0097-9518-453d-a569-e141ded96ed2
+		summarizeBy: none
+		sourceColumn: Days_Cover_90D
+
+	column Inventory_Status
+		dataType: string
+		lineageTag: c19616c2-6836-4be4-a441-6e3a383fd1fb
+		summarizeBy: none
+		sourceColumn: Inventory_Status
+
+	column Analytical_Priority
+		dataType: string
+		lineageTag: 5b25599d-dd2f-4292-b404-fb968acd7613
+		summarizeBy: none
+		sourceColumn: Analytical_Priority
+
+	column Need_Qty_Base
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 953a88c8-2f0f-4d3f-8e50-d8b443454e02
+		summarizeBy: none
+		sourceColumn: Need_Qty_Base
+
+	column Sales_Opportunity_Exposure_Base
+		dataType: double
+		formatString: #,##0
+		lineageTag: bd081cd3-30c4-4793-a943-b103de7043ea
+		summarizeBy: none
+		sourceColumn: Sales_Opportunity_Exposure_Base
+
+	column GP_Opportunity_Exposure_Base
+		dataType: double
+		formatString: #,##0
+		lineageTag: 325a6d83-251e-4ac0-b3f0-b433b64e33cf
+		summarizeBy: none
+		sourceColumn: GP_Opportunity_Exposure_Base
+
+	column Donor_Excess_Base
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 976a3837-cc2c-46ba-b3d0-66b99e41947e
+		summarizeBy: none
+		sourceColumn: Donor_Excess_Base
+
+	column 库存状态显示 = SWITCH(inventory_fact[Inventory_Status], "Active Stockout","缺货", "Critical","高风险", "Low Stock","低库存", "Healthy","健康", "Overstock","库存过量", "Dormant / No Recent Sales","近期无销量", inventory_fact[Inventory_Status])
+		dataType: string
+		lineageTag: 62fdd9a0-547c-4dcf-a74b-4b1ede9f0e51
+		summarizeBy: none
+		sortByColumn: 库存状态顺序
+
+	column 库存状态顺序 = SWITCH(inventory_fact[Inventory_Status], "Active Stockout",1, "Critical",2, "Low Stock",3, "Healthy",4, "Overstock",5, "Dormant / No Recent Sales",6, 99)
+		dataType: int64
+		isHidden
+		formatString: 0
+		lineageTag: 7226353d-1add-4ca7-a4c7-4c406445808e
+		summarizeBy: none
+
+	column 风险优先级排名 = RANKX(FILTER(ALL(inventory_fact), inventory_fact[Analytical_Priority] = "P1"), IF(inventory_fact[Inventory_Status] = "Active Stockout", 1000000000000, 0) + inventory_fact[GP_Opportunity_Exposure_Base] * 1000000 - inventory_fact[Store_ID] * 1000 - inventory_fact[Product_ID],, DESC, SKIP)
+		isHidden
+		formatString: 0
+		lineageTag: e7bfa5bb-ff16-4f78-b80b-12a79bc65901
 
 	partition inventory_fact = m
 		mode: import
 		source =
 				let
-				 CsvSource = Csv.Document(File.Contents("C:\Users\Administrator\Desktop\数据分析项目\03_Mexico_Toy_Sales\output\inventory_fact.csv"),[Delimiter=",",Columns=9,Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
-				 PromotedHeaders = Table.PromoteHeaders(CsvSource,[PromoteAllScalars=true]),
-				 TypedColumns = Table.TransformColumnTypes(PromotedHeaders,{{"Store_ID",Int64.Type},{"Product_ID",Int64.Type},{"Stock_On_Hand",Int64.Type},{"Inventory_Cost_Value",type number},{"Inventory_Retail_Value",type number},{"Out_of_Stock_Flag",Int64.Type},{"Recent_90D_Units",Int64.Type},{"Avg_Daily_Units",type number},{"Days_of_Inventory",type number}})
-				in TypedColumns
+					Source = Csv.Document(File.Contents(DataRootPath & "inventory_fact.csv"),[Delimiter=",",Encoding=65001,QuoteStyle=QuoteStyle.Csv]),
+					Headers = Table.PromoteHeaders(Source,[PromoteAllScalars=true]),
+					Types = Table.TransformColumnTypes(Headers,{{"Store_ID",Int64.Type},{"Product_ID",Int64.Type},{"Stock_On_Hand",Int64.Type},{"Inventory_Cost",type number},{"Inventory_Retail_Value",type number},{"Recent_90D_Units",Int64.Type},{"Avg_Daily_Demand_90D",type number},{"Days_Cover_90D",type number},{"Inventory_Status",type text},{"Analytical_Priority",type text},{"Need_Qty_Base",Int64.Type},{"Sales_Opportunity_Exposure_Base",type number},{"GP_Opportunity_Exposure_Base",type number},{"Donor_Excess_Base",Int64.Type}})
+				in Types
 
